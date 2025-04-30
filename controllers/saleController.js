@@ -30,13 +30,7 @@ const createSale = async (req, res) => {
     if (!pizza) {
       return res.status(404).json({ message: 'Pizza not found' });
     }
-    // if (!pizza) {
-    //   return res.status(404).json({ message: 'Pizza not found' });
-    // }
-
-    // Calculer le prix total pour la pizza
-    // const totalPrice = pizza.size * quantitypizza;
-
+  
     // Créer la vente
     const sale = new Sale({
       pizzaId,
@@ -175,23 +169,7 @@ const deleteSale = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
-// const getAllSales = async (req, res) => {
-//   try {
-//     // Récupérer toutes les ventes avec les relations (pizzaId et sides.sideId)
-//     const sales = await Sale.find({})
-//       .populate('pizzaId') // Remplir les informations de la pizza
-//       .populate('sides.sideId'); // Remplir les informations des sides
 
-//     if (!sales || sales.length === 0) {
-//       return res.status(404).json({ message: 'No sales found' });
-//     }
-
-//     res.status(200).json({ sales });
-//   } catch (error) {
-//     console.error('Error fetching sales:', error);
-//     res.status(500).json({ message: 'Internal Server Error', error });
-//   }
-// };
 const getAllSales = async (req, res) => {
   try {
     // Fetch all sales

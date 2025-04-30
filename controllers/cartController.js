@@ -65,25 +65,6 @@ exports.addSaleToCart = async (req, res) => {
   }
 };
 
-// // Get the cart details
-// exports.getCart = async (req, res) => {
-//   const { userId } = req.params;
-
-//   try {
-//     // Find the cart for the user and populate sales
-//     const cart = await Cart.findOne({ userId }).populate('sales.saleId');
-
-//     if (!cart) {
-//       return res.status(404).json({ message: 'Cart not found' });
-//     }
-
-//     res.status(200).json(cart);  // Return the cart with all sales
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-
 
 
 
@@ -163,25 +144,7 @@ exports.addToCart = async (req, res) => {
       }
     };
     
-    // // Get the cart details
-    // exports.getCart = async (req, res) => {
-    //   const { userId } = req.params;
-    
-    //   try {
-    //     const cart = await Cart.findOne({ userId })
-    //       .populate('salesID')  
-    //       .populate('salesID.pizzaId')  
-    //       .populate('salesID.sides');  
-    
-    //     if (!cart) {
-    //       return res.status(404).json({ message: 'Cart not found' });
-    //     }
-    
-    //     res.status(200).json(cart);  // Return the cart with populated details
-    //   } catch (err) {
-    //     res.status(500).json({ message: err.message });
-    //   }
-    // };
+ 
     exports.getCart = async (req, res) => {
       const { userId } = req.params;
     
@@ -253,113 +216,52 @@ exports.clearCart = async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   };
-  // // Remove a sale from the cart
-  // exports.removeSaleFromCart = async (req, res) => {
-  //   const { userId, saleId } = req.body;
-  
-  //   try {
-  //     // Find the cart for the user
-  //     const cart = await Cart.findOne({ userId });
-  
-  //     if (!cart) return res.status(404).json({ message: 'Cart not found' });
-  
-  //     // Ensure the salesID array is initialized as an array
-  //     if (!Array.isArray(cart.salesID)) {
-  //       cart.salesID = [];  // Initialize it as an empty array if not already
-  //     }
-  
-  //     // Find the index of the sale in the salesID array
-  //     const saleIndex = cart.salesID.findIndex(item => item.toString() === saleId.toString());
-  
-  //     if (saleIndex === -1) {
-  //       return res.status(400).json({ message: 'Sale not found in cart' });
-  //     }
-  
-  //     // Remove the sale from the cart's salesID array
-  //     cart.salesID.splice(saleIndex, 1);
-  
-  //     // Calculate the new cart total
-  //     const totalPrice = cart.salesID.reduce((total, item) => total + item.totalPrice, 0);
-  //     cart.cartTotal = totalPrice;
-  
-  //     // Save the updated cart
-  //     await cart.save();
-  
-  //     res.status(200).json({ message: 'Sale removed from cart', cart });
-  //   } catch (err) {
-  //     console.error('Error removing sale from cart:', err);
-  //     res.status(500).json({ message: 'Internal server error', error: err.message });
-  //   }
-  // };
-  // ✅ Remove a sale from the cart safely
+
+  //  Remove a sale from the cart safely
 exports.removeSaleFromCart = async (req, res) => {
   const { userId, saleId } = req.body;
 
   try {
-      // ✅ Find the cart for the user
+      //  Find the cart for the user
       const cart = await Cart.findOne({ userId }).populate('salesID'); // Ensure sales are populated
 
       if (!cart) {
           return res.status(404).json({ message: 'Cart not found' });
       }
 
-      // ✅ Ensure `salesID` is an array
+      //  Ensure `salesID` is an array
       if (!Array.isArray(cart.salesID)) {
           cart.salesID = [];
       }
 
-      // ✅ Find the sale index
+      //  Find the sale index
       const saleIndex = cart.salesID.findIndex(sale => sale._id.toString() === saleId.toString());
 
       if (saleIndex === -1) {
           return res.status(400).json({ message: 'Sale not found in cart' });
       }
 
-      // ✅ Get the price of the removed sale (ensure it's a valid number)
+      //  Get the price of the removed sale (ensure it's a valid number)
       const salePrice = cart.salesID[saleIndex]?.totalPrice || 0;
 
-      // ✅ Remove the sale from `salesID`
+      //  Remove the sale from `salesID`
       cart.salesID.splice(saleIndex, 1);
 
-      // ✅ Recalculate `cartTotal` safely
+      //  Recalculate `cartTotal` safely
       cart.cartTotal = cart.salesID.reduce((total, sale) => {
           return total + (sale.totalPrice || 0); // Ensure `totalPrice` is a number
       }, 0);
 
-      // ✅ Ensure `cartTotal` is not `NaN` or negative
       cart.cartTotal = Math.max(0, cart.cartTotal);
 
-      // ✅ Save the updated cart
+      //  Save the updated cart
       await cart.save();
 
       res.status(200).json({ message: 'Sale removed from cart', cart });
   } catch (err) {
-      console.error('❌ Error removing sale from cart:', err);
+      console.error(' Error removing sale from cart:', err);
       res.status(500).json({ message: 'Internal server error', error: err.message });
   }
 };
 
-// Clear the cart
-// exports.clearCart = async (req, res) => {
-//   const { userId } = req.body;
 
-//   try {
-//     // Find the cart for the user
-//     const cart = await Cart.findOne({ userId });
-
-//     if (!cart) {
-//       return res.status(404).json({ message: 'Cart not found' });
-//     }
-
-//     // Clear the salesID array and reset cartTotal
-//     cart.salesID = [];
-//     cart.cartTotal = 0;
-
-//     // Save the updated cart
-//     await cart.save();
-
-//     res.status(200).json({ message: 'Cart cleared', cart });
-//   } catch (err) {
-//     console.error('Error clearing cart:', err);
-//     res.status(500).json({ message: 'Internal server error', error: err.message });
-  

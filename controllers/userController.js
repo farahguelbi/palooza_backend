@@ -1,3 +1,4 @@
+//importation des modules 
 const bcrypt=require("bcryptjs");
 const User=require("../models/user");
 const jwt = require("jsonwebtoken");
@@ -10,18 +11,14 @@ const blacklistedTokens = new Set();
 
 //register User 
 exports.registerUser=async (req,res)=>{
-    console.log(req.body);  // Log the request body to verify it's being received correctly
+    console.log(req.body);  
 
     const { firstName, lastName, email, password, imageUrl, address, phone, gender, birthDate } = req.body;
         if(!firstName||!lastName||!email||!password){
             return res.status(400).json({ message: "Missing required fields" });
 
         }
-       /* //verify if password=confirmPassword 
-        if (password !== confirmPassword) {
-            return res.status(400).json({ message: "Passwords do not match" });
-          }*/
-        
+    
         try{
             const existingUser =await User.findOne({ email });
             if(existingUser) return res.status(400).json({ message: "User already exists" });
@@ -162,10 +159,9 @@ exports.updateUser = async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(
             id,
             { firstName, lastName, phone, address, gender, birthDate },
-            { new: true, runValidators: true } // Return the updated user and validate the inputs
+            { new: true, runValidators: true } // Return le updated_user et valider les champs 
         );
-
-        // Check if user was found
+//on verifie si le user existe 
         if (!updatedUser) {
             return res.status(404).json({ success: false, message: "User not found." });
         }

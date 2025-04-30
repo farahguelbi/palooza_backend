@@ -36,11 +36,7 @@ const pizzaSchema=new mongoose.Schema(
             ],
        
     
-        // type:{
-        //     type:mongoose.Schema.Types.ObjectId,
-        //     ref:'Type',
-        //     required:true
-        // },
+      
         type:{
             type: String,
             enum: ['Full Pizza', 'Slice'],
@@ -63,20 +59,6 @@ const pizzaSchema=new mongoose.Schema(
        
         },
 
-            
-            // size: [
-            //     {
-            //       size: { 
-            //         type: String, 
-            //         required: true, 
-            //         enum: ['small', 'medium', 'large'], // Enum for sizes
-            //       },
-            //       price: { 
-            //         type: Number, 
-            //         required: true 
-            //       }
-            //     }
-            //   ],
        
          { timestamps: true });
 

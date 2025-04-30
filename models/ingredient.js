@@ -12,11 +12,6 @@ const ingredientSchema =new mongoose.Schema({
         type:String,
        required:true
     },
-    // layer: {
-    // type: Number,
-    // enum: [1, 2, 3, 4],  
-    // required: true,
-    //   }
   
 });
 module.exports=mongoose.model('Ingredient',ingredientSchema);
